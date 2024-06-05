@@ -3,15 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
     public function index()
     {
-        $movie = new Movie;
-        $movies = $movie->getAllMovie();
+        $movies = Movie::all();
 
-        return view('movies.index', ['movies' => $movies]);
+        return view('movies.index', compact('movies'));
     }
+
+    public function create()
+    {
+    $genres = Genre::all();
+    return view('movies.create', compact('genres'));
+    }
+
+    public function store(Request $request)
+    {
+    $validatedDate = $request->validate([
+        'title' => 'required',
+        'genre_id' => 'required',
+        'poster' => 'required',
+        'synopsis' => 'required',
+    ]);
+    
+    movie::create($validatedData);
+
+    return redirect('/movies')->with('success', 'Movie added successfully!');
+    }
+
+    public function destroy(Movie $movie)
+    {
+    $movie->delete();
+    return redirect('/movies')->with('success', 'Movie deleted successfully!');
+    }
+
 }
